@@ -71,11 +71,10 @@ const EleveForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
           formData.append(key, value as any);
         }
       });
-      // Ici, vous pouvez envoyer formData à l'API, puis notifier le succès ou réinitialiser le formulaire
-      // await eleveService.create(formData);
-      // notifySuccess("Élève inscrit avec succès");
-      // if (onSuccess) onSuccess();
-    } catch (error) {
+      await eleveService.create(formData);
+      notifySuccess("Élève inscrit avec succès");
+      if (onSuccess) onSuccess();
+    } catch {
       // Gérer l'erreur si besoin
     }
   };
@@ -86,7 +85,7 @@ const EleveForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
       <div className="flex items-center gap-4 px-8 pt-8 pb-4 border-b border-gray-200 dark:border-gray-700">
         <UserPlus className="w-10 h-10 text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 rounded-full p-2" />
         <div>
-          <h2 className="text-2xl font-extrabold text-gray-800 dark:text-white mb-1">Inscription d'un élève</h2>
+          <h2 className="text-2xl font-extrabold text-gray-800 dark:text-white mb-1">Inscription d&#39;un élève</h2>
           <p className="text-gray-500 dark:text-gray-300 text-sm">Remplis soigneusement le formulaire ci-dessous</p>
         </div>
       </div>
@@ -168,7 +167,7 @@ const EleveForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
             </div>
             <div className="flex justify-end gap-3 pt-4">
               <button type="reset" className="flex items-center gap-2 px-5 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"><XCircle className="w-4 h-4" />Annuler</button>
-              <button type="submit" className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold shadow hover:from-blue-700 hover:to-purple-700 transition-all"><CheckCircle className="w-4 h-4" />Enregistrer l'élève</button>
+              <button type="submit" className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold shadow hover:from-blue-700 hover:to-purple-700 transition-all"><CheckCircle className="w-4 h-4" />Enregistrer l&#39;élève</button>
             </div>
           </form>
         </div>

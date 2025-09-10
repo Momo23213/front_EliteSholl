@@ -73,7 +73,36 @@ useEffect(() => {
       try {
         setLoader(true);
         const data = await noteService.getAll();
-        setData(data);
+        // Adapter les données reçues du backend au format attendu par le tableau
+        const mappedData = data.map((n: any) => ({
+          _id: n._id,
+          eleveId: {
+            _id: n.eleveId?._id || '',
+            matricule: n.eleveId?.matricule || '',
+            nom: n.eleveId?.nom || '',
+            prenom: n.eleveId?.prenom || '',
+            photo: n.eleveId?.photo || '',
+            sexe: n.eleveId?.sexe || '',
+            classeId: n.eleveId?.classeId || {},
+            statut: n.eleveId?.statut || '',
+          },
+          matiereId: {
+            _id: n.matiereId?._id || '',
+            nom: n.matiereId?.nom || '',
+          },
+          enseignantId: {
+            nom: n.enseignantId?.[0]?.nom || '',
+            prenom: n.enseignantId?.[0]?.prenom || '',
+          },
+          valeur: n.valeur ?? 0,
+          trimestre: n.trimestre || '',
+          sequence: n.sequence || '',
+          anneeScolaireId: {
+            _id: n.anneeScolaireId?._id || '',
+            libelle: n.anneeScolaireId?.libelle || '',
+          },
+        }));
+        setData(mappedData);
       } catch (error: any) {
         console.log(error.message); // ✅ corrigé
       } finally {

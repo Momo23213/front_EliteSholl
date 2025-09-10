@@ -7,9 +7,10 @@ export const classeService = {
     const res = await api.get("/classe");
     return res.data;
   },
-  getAllEleve: async (id:string): Promise<Classe[]> => {
-    const res = await api.get(`/classe/${id}/eleves`);
-    return res.data.classes;
+  getAllEleve: async (id:string): Promise<any[]> => {
+    const res = await api.get(`/classe/${id}`);
+    // On retourne le tableau d'élèves directement
+    return res.data.eleves || [];
   },
 
   getById: async (classeId: string): Promise<Classe> => {

@@ -12,10 +12,7 @@ import {
   faUsers, 
   faChartBar, 
   faCheckCircle,
-  faExclamationTriangle,
-  faCalendar,
-  faGraduationCap,
-  faDollarSign
+  faGraduationCap
 } from '@fortawesome/free-solid-svg-icons';
 
 function StudentsPage() {

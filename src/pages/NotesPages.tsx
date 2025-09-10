@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { noteService } from '../services/noteService';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -74,92 +75,48 @@ const NotesPages: React.FC = () => {
   const trimestres = ['1er Trimestre', '2ème Trimestre', '3ème Trimestre'];
   const sequences = ['1ère Séquence', '2ème Séquence', '3ème Séquence', '4ème Séquence'];
 
-  // Données d'exemple
+  // Backend: fetch notes
   useEffect(() => {
-    const sampleNotes: Note[] = [
-      {
-        id: '1',
-        eleveId: '1',
-        eleveNom: 'Martin',
-        elevePrenom: 'Lucas',
-        matiere: 'Mathématiques',
-        classe: '6ème A',
-        note: 16,
-        noteMax: 20,
-        coefficient: 4,
-        type: 'devoir',
-        date: '2024-01-15',
-        trimestre: '1er Trimestre',
-        sequence: '1ère Séquence',
-        enseignant: 'Marie Dupont',
-        appreciation: 'Excellent travail'
-      },
-      {
-        id: '2',
-        eleveId: '2',
-        eleveNom: 'Dubois',
-        elevePrenom: 'Emma',
-        matiere: 'Français',
-        classe: '6ème A',
-        note: 14,
-        noteMax: 20,
-        coefficient: 3,
-        type: 'examen',
-        date: '2024-01-20',
-        trimestre: '1er Trimestre',
-        sequence: '1ère Séquence',
-        enseignant: 'Pierre Martin',
-        appreciation: 'Très bien'
-      },
-      {
-        id: '3',
-        eleveId: '3',
-        eleveNom: 'Bernard',
-        elevePrenom: 'Thomas',
-        matiere: 'Mathématiques',
-        classe: '5ème B',
-        note: 8,
-        noteMax: 20,
-        coefficient: 4,
-        type: 'controle',
-        date: '2024-01-18',
-        trimestre: '1er Trimestre',
-        sequence: '1ère Séquence',
-        enseignant: 'Marie Dupont',
-        appreciation: 'À améliorer'
-      },
-      {
-        id: '4',
-        eleveId: '4',
-        eleveNom: 'Laurent',
-        elevePrenom: 'Sophie',
-        matiere: 'Anglais',
-        classe: '4ème A',
-        note: 18,
-        noteMax: 20,
-        coefficient: 2,
-        type: 'oral',
-        date: '2024-01-22',
-        trimestre: '1er Trimestre',
-        sequence: '1ère Séquence',
-        enseignant: 'Sophie Bernard',
-        appreciation: 'Parfait'
+    const fetchNotes = async () => {
+      try {
+        const data = await noteService.getAll();
+        // Adapter les données reçues du backend au format attendu par le frontend
+        const mappedNotes = data.map((n: any) => ({
+          id: n._id,
+          eleveId: n.eleveId?._id || '',
+          eleveNom: n.eleveId?.nom || '',
+          elevePrenom: n.eleveId?.prenom || '',
+          matiere: n.matiereId?.nom || '',
+          classe: n.eleveId?.classeId?.nom || '',
+          note: n.valeur ?? 0,
+          noteMax: 20,
+          coefficient: n.coefficient ?? 1,
+          type: n.type || 'devoir',
+          date: n.date || '',
+          trimestre: n.trimestre || '',
+          sequence: n.sequence || '',
+          enseignant: n.enseignantId?.[0]?.nom ? `${n.enseignantId[0].nom} ${n.enseignantId[0].prenom || ''}` : '',
+          appreciation: n.appreciation || ''
+        }));
+        setNotes(mappedNotes);
+      } catch (error) {
+        console.error('Erreur lors du chargement des notes:', error);
       }
-    ];
-    setNotes(sampleNotes);
+    };
+    fetchNotes();
   }, []);
 
   const filteredNotes = notes.filter(note => {
-    const matchesSearch = 
-      note.eleveNom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.elevePrenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.matiere.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.classe.toLowerCase().includes(searchTerm.toLowerCase());
-    
+    const matchesSearch =
+      (note.eleveNom?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+      (note.elevePrenom?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+      (note.matiere?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false) ||
+      (note.classe?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false);
+
     const matchesMatiere = filterMatiere === 'tous' || note.matiere === filterMatiere;
     const matchesClasse = filterClasse === 'tous' || note.classe === filterClasse;
     const matchesTrimestre = filterTrimestre === 'tous' || note.trimestre === filterTrimestre;
-    
+
     return matchesSearch && matchesMatiere && matchesClasse && matchesTrimestre;
   });
 
@@ -187,48 +144,45 @@ const NotesPages: React.FC = () => {
     }, {} as Record<string, number>)
   };
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (newNote.eleveNom && newNote.elevePrenom && newNote.matiere && newNote.note !== undefined) {
-      const note: Note = {
-        id: Date.now().toString(),
-        eleveId: Date.now().toString(),
-        eleveNom: newNote.eleveNom!,
-        elevePrenom: newNote.elevePrenom!,
-        matiere: newNote.matiere!,
-        classe: newNote.classe || '',
-        note: newNote.note!,
-        noteMax: newNote.noteMax || 20,
-        coefficient: newNote.coefficient || 1,
-        type: newNote.type || 'devoir',
-        date: newNote.date || new Date().toISOString().split('T')[0],
-        trimestre: newNote.trimestre || '1er Trimestre',
-        sequence: newNote.sequence || '1ère Séquence',
-        enseignant: newNote.enseignant || '',
-        appreciation: newNote.appreciation
-      };
-      setNotes([...notes, note]);
-      setNewNote({
-        eleveNom: '',
-        elevePrenom: '',
-        matiere: '',
-        classe: '',
-        note: 0,
-        noteMax: 20,
-        coefficient: 1,
-        type: 'devoir',
-        date: new Date().toISOString().split('T')[0],
-        trimestre: '1er Trimestre',
-        sequence: '1ère Séquence',
-        enseignant: '',
-        appreciation: ''
-      });
-      setShowAddModal(false);
+      try {
+        await noteService.create(newNote);
+        // Refresh notes from backend
+        const data = await noteService.getAll();
+        setNotes(data);
+        setNewNote({
+          eleveNom: '',
+          elevePrenom: '',
+          matiere: '',
+          classe: '',
+          note: 0,
+          noteMax: 20,
+          coefficient: 1,
+          type: 'devoir',
+          date: new Date().toISOString().split('T')[0],
+          trimestre: '1er Trimestre',
+          sequence: '1ère Séquence',
+          enseignant: '',
+          appreciation: ''
+        });
+        setShowAddModal(false);
+      } catch (error) {
+        alert('Erreur lors de l\'ajout de la note.');
+      }
     }
   };
 
-  const handleDeleteNote = (id: string) => {
+  const handleDeleteNote = async (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
-      setNotes(notes.filter(note => note.id !== id));
+      try {
+        await noteService.remove(id);
+        // Refresh notes from backend
+        const data = await noteService.getAll();
+        setNotes(data);
+      } catch (error) {
+        alert('Erreur lors de la suppression de la note.');
+      }
     }
   };
 

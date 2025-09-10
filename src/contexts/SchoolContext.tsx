@@ -3,13 +3,14 @@ import { Classe, Eleve, Matiere, AnneeScolaire } from "../types/types";
 import { classeService } from "../services/classeService";
 import { matiereService } from "../services/matiereService";
 import { anneeService } from "../services/anneeService";
+import { enseignantService } from "../services/enseignantService";
 
 interface SchoolContextProps {
   classes: Classe[];
   eleves: Eleve[];
   matieres: Matiere[];
   annes: AnneeScolaire[];
-  enseignants: { id: string; nom: string }[];
+  enseignants: any[];
   loading: boolean;
   fetchElevesByClasse: (classeId: string) => Promise<void>;
 }
@@ -33,22 +34,21 @@ export const SchoolProvider: React.FC<ProviderProps> = ({ children }) => {
   const [annes, setAnnes] = useState<AnneeScolaire[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const enseignants = [
-    { id: "ens1", nom: "M. Albert" },
-    { id: "ens2", nom: "Mme Claire" },
-  ];
+  const [enseignants, setEnseignants] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchInitialData() {
       setLoading(true);
-      const [classesData, anneeData, matieresData] = await Promise.all([
+      const [classesData, anneeData, matieresData, enseignantsData] = await Promise.all([
         classeService.getAll(),
         anneeService.getAll(),
-        matiereService.getAll()
+        matiereService.getAll(),
+        enseignantService.getAll()
       ]);
       setClasses(classesData);
       setAnnes(anneeData);
       setMatieres(matieresData);
+      setEnseignants(enseignantsData);
       setLoading(false);
     }
     fetchInitialData();

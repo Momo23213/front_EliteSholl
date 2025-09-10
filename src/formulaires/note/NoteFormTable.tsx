@@ -17,6 +17,7 @@ const NoteFormTable: React.FC = () => {
   });
 
   const { fields, replace } = useFieldArray({ control, name: "notes" });
+  const watchedNotes = watch("notes");
 
   const watchedClasseId = watch("classeId");
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -31,17 +32,21 @@ const NoteFormTable: React.FC = () => {
         return;
       }
       await fetchElevesByClasse(watchedClasseId);
-
-      const notesInit = eleves.map(eleve => ({
-        eleveId: eleve._id,
-        nomComplet: `${eleve.prenom} ${eleve.nom}`,
-        matricule: eleve.matricule,
-        valeur: 0
-      }));
-      replace(notesInit);
+      // On attend que le fetch soit terminé, puis on initialise les notes
+      setTimeout(() => {
+        replace(
+          (Array.isArray(eleves) ? eleves : []).map(eleve => ({
+            eleveId: eleve._id,
+            nomComplet: `${eleve.prenom} ${eleve.nom}`,
+            matricule: eleve.matricule || '-',
+            valeur: 0
+          }))
+        );
+      }, 0);
     }
     fetchAndPrepare();
-  }, [watchedClasseId, eleves, fetchElevesByClasse, replace]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedClasseId]);
 
   const onSubmit: SubmitHandler<NoteFormInputs> = async (data) => {
     if (!data.classeId || !data.matiereId || !data.enseignantId || !data.trimestre || !data.sequence || !data.anneeScolaireId) {
@@ -85,7 +90,9 @@ const NoteFormTable: React.FC = () => {
             <label className={labelStyle}><GraduationCap size={16} />Classe</label>
             <select {...register("classeId", { required: "La classe est requise" })} className={inputStyle}>
               <option value="">Sélectionner une classe</option>
-              {classes.map(c => <option key={c._id} value={c._id}>{c.nom}</option>)}
+                {classes.map(c => (
+                  <option key={c._id || c.nom} value={c._id}>{c.nom}</option>
+                ))}
             </select>
             {errors.classeId && <p className={errorStyle}>{errors.classeId.message}</p>}
           </div>
@@ -103,7 +110,11 @@ const NoteFormTable: React.FC = () => {
             <label className={labelStyle}><GraduationCap size={16} />Enseignant</label>
             <select {...register("enseignantId", { required: "L'enseignant est requis" })} className={inputStyle}>
               <option value="">Sélectionner un enseignant</option>
-              {enseignants.map(e => <option key={e._id} value={e._id}>{e.nom}</option>)}
+              {enseignants.map(e => (
+                <option key={e._id || e.id || e.nom} value={e._id || e.id}>
+                  {e.nom} {e.prenom ? e.prenom : ''}
+                </option>
+              ))}
             </select>
             {errors.enseignantId && <p className={errorStyle}>{errors.enseignantId.message}</p>}
           </div>
@@ -154,7 +165,7 @@ const NoteFormTable: React.FC = () => {
               {fields.length > 0 ? fields.map((field, index) => (
                 <tr key={field.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{field.nomComplet}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{field.matricule}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{field.matricule || '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <input
                       type="number"
@@ -165,6 +176,7 @@ const NoteFormTable: React.FC = () => {
                         max: { value: 20, message: "<= 20" },
                       })}
                       className="w-24 p-2 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-center"
+                      value={watchedNotes?.[index]?.valeur ?? ''}
                     />
                     {errors.notes?.[index]?.valeur && (
                       <p className={errorStyle}>{errors.notes[index].valeur?.message}</p>
@@ -198,9 +210,8 @@ const NoteFormTable: React.FC = () => {
         <button
           type="submit"
           className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
         >
-          {loading ? "Envoi en cours..." : "Enregistrer toutes les notes"}
+          { "Enregistrer toutes les notes"}
         </button>
       </form>
     </div>
