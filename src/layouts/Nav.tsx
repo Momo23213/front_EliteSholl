@@ -153,7 +153,7 @@ const Navbar: React.FC = () => {
         label: "Paiements",
         icon: DollarSign,
         items: [
-          { name: "Historique", path: "/paiements", icon: DollarSign }
+          { name: "Historique", path: "/historique", icon: DollarSign }
         ]
       },
       {
@@ -169,7 +169,7 @@ const Navbar: React.FC = () => {
       { name: "Calendrier", path: "/calendrier", icon: Calendar },
       { name: "Mes Notes", path: "/notes", icon: BookOpen },
       { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
-      { name: "Historique Paiements", path: "/paiements", icon: DollarSign },
+      { name: "Historique Paiements", path: "/historique", icon: DollarSign },
       { name: "Profil", path: "/profil", icon: User },
     ];
   }

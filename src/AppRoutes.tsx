@@ -18,6 +18,7 @@ import ControlePaiement from "./pages/admin/ControlePaiement";
 import FraiScolairePage from "./pages/admin/FraisScolairePage";
 import EleveDashboard from "./pages/eleves/Dashbord";
 import TeacherDashboard from "./pages/enseignant/Dashbord";
+import Historiques from "./pages/eleves/HistoriqueEleve";
 function Layout() {
   const location = useLocation();
   const cache = location.pathname === "/";
@@ -82,6 +83,9 @@ function Layout() {
   {/* Élève */}
   <Route path="/eleve/dashboard" element={
     <PrivateRoute roles={["eleve"]}><EleveDashboard /></PrivateRoute>
+  }/>
+  <Route path="/historique" element={
+    <PrivateRoute roles={["eleve"]}><Historiques /></PrivateRoute>
   }/>
 </Routes>
       </div>

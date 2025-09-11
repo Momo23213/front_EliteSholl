@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Sun, Moon, BookOpen, Calendar, DollarSign, User } from "lucide-react";
+import ProfileEleve from "./ProfileEleve";
 
 // Exemple types
 type Note = { matiere: string; note: number };
@@ -118,6 +119,7 @@ const EleveDashboard: React.FC = () => {
           )}
         </div>
       </div>
+      <ProfileEleve/>
     </div>
   );
 };
