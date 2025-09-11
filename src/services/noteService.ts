@@ -3,7 +3,7 @@ import { Note } from "../types/types";
 import axios, { AxiosError } from 'axios';
 
 // L'URL de votre API de backend
-const API_URL = "http://localhost:3002/api/notes/tableau";
+const API_URL = "https://schoolelite.onrender.com/api/notes/tableau";
 interface NoteDataForAPI {
   eleveId: string;
   matiereId: string;
@@ -51,7 +51,7 @@ export const noteService = {
     } catch (error) {
       // Axios gère les erreurs en lançant une exception
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
+        const axiosError = error as AxiosError<any>;
         if (axiosError.response) {
           // L'API a répondu avec un code d'erreur (4xx, 5xx)
           throw new Error(axiosError.response.data.message || 'Échec de l\'enregistrement des notes.');

@@ -143,7 +143,7 @@ export interface Emploi {
 
 // ======================== UTILISATEUR ========================
 export interface User {
-  _id: string;
+  id: string;
   nom: string;
   prenom: string;
   email: string;

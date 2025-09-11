@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "checkJs": false,
+      "resolveJsonModule": true,
+      "forceConsistentCasingInFileNames": false,
+      "isolatedModules": true,
+      "noEmit": true,
+      "esModuleInterop": true
+    }
+  }
+  
