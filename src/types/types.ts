@@ -104,11 +104,18 @@ export interface Paiement {
   eleveId: Eleve[];
   classeId:  {_id?:string,nom:string};
   anneeScolaireId: string;
+  montantTotal: number;
   montantPaye: number;
-  datePaiement: string;
+  montantRestant: number;
+  paiements: Array<{
+    typePaiement: string;
+    montant: number;
+    datePaiement: string;
+  }>;
+  datePaiement?: string; // for compatibility, but not used in backend model
   methode?: string; // cash, mobile money, etc.
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 // ======================== PRESENCE ========================

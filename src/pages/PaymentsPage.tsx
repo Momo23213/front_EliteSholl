@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { eleveService } from '../services/eleveService';
+import { paiementService } from '../services/paiementService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faDollarSign, 
@@ -7,7 +9,6 @@ import {
   faTrash, 
   faSearch,
   faCheckCircle,
-  faTimesCircle,
   faClock,
   faUser,
   faCalendar,
@@ -16,30 +17,25 @@ import {
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
 
-interface Payment {
-  id: string;
-  eleveId: string;
-  eleveNom: string;
-  elevePrenom: string;
-  montant: number;
-  datePaiement: string;
-  typePaiement: 'scolarite' | 'transport' | 'cantine' | 'activite' | 'autre';
-  statut: 'paye' | 'en_attente' | 'en_retard';
-  methodePaiement: 'especes' | 'cheque' | 'virement' | 'carte';
-  reference: string;
-  notes?: string;
-}
+import { Paiement } from '../types/types';
 
 const PaymentsPage: React.FC = () => {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<Paiement[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('tous');
   const [filterType, setFilterType] = useState<string>('tous');
-  const [newPayment, setNewPayment] = useState<Partial<Payment>>({
-    eleveNom: '',
-    elevePrenom: '',
+  const [newPayment, setNewPayment] = useState<{
+    eleveId: string;
+    montant: number;
+    datePaiement: string;
+    typePaiement: string;
+    statut: string;
+    methodePaiement: string;
+    reference: string;
+    notes: string;
+  }>({
+    eleveId: '',
     montant: 0,
     datePaiement: new Date().toISOString().split('T')[0],
     typePaiement: 'scolarite',
@@ -48,6 +44,11 @@ const PaymentsPage: React.FC = () => {
     reference: '',
     notes: ''
   });
+  const [eleves, setEleves] = useState<any[]>([]); // TODO: type Eleve[]
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const typesPaiement = [
     { value: 'scolarite', label: 'Scolarité', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
@@ -64,96 +65,90 @@ const PaymentsPage: React.FC = () => {
   ];
 
   // Données d'exemple
+  const fetchPaiements = async () => {
+    const res = await paiementService.getAllPaiements(page, limit);
+    setPayments(res.paiements);
+    setTotal(res.total);
+  };
+
   useEffect(() => {
-    const samplePayments: Payment[] = [
-      {
-        id: '1',
-        eleveId: '1',
-        eleveNom: 'Martin',
-        elevePrenom: 'Lucas',
-        montant: 1500,
-        datePaiement: '2024-01-15',
-        typePaiement: 'scolarite',
-        statut: 'paye',
-        methodePaiement: 'virement',
-        reference: 'VIR-2024-001',
-        notes: 'Paiement trimestriel'
-      },
-      {
-        id: '2',
-        eleveId: '2',
-        eleveNom: 'Dubois',
-        elevePrenom: 'Emma',
-        montant: 300,
-        datePaiement: '2024-01-20',
-        typePaiement: 'transport',
-        statut: 'en_attente',
-        methodePaiement: 'cheque',
-        reference: 'CHQ-2024-002',
-        notes: 'Paiement mensuel transport'
-      },
-      {
-        id: '3',
-        eleveId: '3',
-        eleveNom: 'Bernard',
-        elevePrenom: 'Thomas',
-        montant: 200,
-        datePaiement: '2024-01-10',
-        typePaiement: 'cantine',
-        statut: 'en_retard',
-        methodePaiement: 'especes',
-        reference: 'ESP-2024-003'
-      }
-    ];
-    setPayments(samplePayments);
-  }, []);
+    fetchPaiements();
+    eleveService.getAll().then((data) => {
+      setEleves(data);
+    });
+    // eslint-disable-next-line
+  }, [page, limit]);
+  // Pagination UI (à placer sous le tableau)
+  // ...existing code...
+  // Après le tableau de paiements :
+  // <div className="flex justify-center mt-4">
+  //   <button disabled={page === 1} onClick={() => setPage(page - 1)} className="px-3 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50">Précédent</button>
+  //   <span className="mx-2">Page {page} / {Math.ceil(total / limit)}</span>
+  //   <button disabled={page >= Math.ceil(total / limit)} onClick={() => setPage(page + 1)} className="px-3 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50">Suivant</button>
+  // </div>
 
   const filteredPayments = payments.filter(payment => {
+    const eleveNom = payment.eleveId && payment.eleveId[0]?.nom ? payment.eleveId[0].nom : '';
+    const elevePrenom = payment.eleveId && payment.eleveId[0]?.prenom ? payment.eleveId[0].prenom : '';
+    // Get latest paiement entry for type and reference
+    const lastPaiement = Array.isArray(payment.paiements) && payment.paiements.length > 0 ? payment.paiements[payment.paiements.length - 1] : null;
+    const typePaiement = lastPaiement?.typePaiement || '';
+    const reference = payment._id || '';
+    // Statut: compute from montantRestant
+    let statut = 'paye';
+    if (typeof payment.montantRestant === 'number') {
+      if (payment.montantRestant > 0 && payment.montantRestant < payment.montantTotal) statut = 'en_attente';
+      else if (payment.montantRestant >= payment.montantTotal) statut = 'en_retard';
+      else if (payment.montantRestant === 0) statut = 'paye';
+    }
     const matchesSearch = 
-      payment.eleveNom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.elevePrenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.reference.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'tous' || payment.statut === filterStatus;
-    const matchesType = filterType === 'tous' || payment.typePaiement === filterType;
-    
+      eleveNom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      elevePrenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reference.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === 'tous' || statut === filterStatus;
+    const matchesType = filterType === 'tous' || typePaiement === filterType;
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  const handleAddPayment = () => {
-    if (newPayment.eleveNom && newPayment.elevePrenom && newPayment.montant) {
-      const payment: Payment = {
-        id: Date.now().toString(),
-        eleveId: Date.now().toString(),
-        eleveNom: newPayment.eleveNom!,
-        elevePrenom: newPayment.elevePrenom!,
-        montant: newPayment.montant!,
-        datePaiement: newPayment.datePaiement!,
-        typePaiement: newPayment.typePaiement!,
-        statut: newPayment.statut!,
-        methodePaiement: newPayment.methodePaiement!,
-        reference: newPayment.reference || `REF-${Date.now()}`,
-        notes: newPayment.notes
+  const handleAddPayment = async () => {
+    if (newPayment.eleveId && newPayment.montant) {
+      const paiementToSend = {
+        eleveId: [newPayment.eleveId],
+        montantPaye: newPayment.montant,
+        datePaiement: newPayment.datePaiement,
+        methode: newPayment.methodePaiement,
+        reference: newPayment.reference,
+        notes: newPayment.notes,
+        // typePaiement, statut à ajouter si backend les gère
       };
-      setPayments([...payments, payment]);
-      setNewPayment({
-        eleveNom: '',
-        elevePrenom: '',
-        montant: 0,
-        datePaiement: new Date().toISOString().split('T')[0],
-        typePaiement: 'scolarite',
-        statut: 'paye',
-        methodePaiement: 'especes',
-        reference: '',
-        notes: ''
-      });
-      setShowAddModal(false);
+      try {
+        const created = await paiementService.creer(paiementToSend);
+        setPayments([...payments, created]);
+        setNewPayment({
+          eleveId: '',
+          montant: 0,
+          datePaiement: new Date().toISOString().split('T')[0],
+          typePaiement: 'scolarite',
+          statut: 'paye',
+          methodePaiement: 'especes',
+          reference: '',
+          notes: ''
+        });
+        setShowAddModal(false);
+      } catch {
+        alert('Erreur lors de l\'ajout du paiement');
+      }
     }
   };
 
-  const handleDeletePayment = (id: string) => {
+  const handleDeletePayment = async (_id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce paiement ?')) {
-      setPayments(payments.filter(payment => payment.id !== id));
+      try {
+        await paiementService.remove(_id);
+        setPayments(payments.filter(payment => payment._id !== _id));
+      } catch {
+        alert('Erreur lors de la suppression du paiement');
+      }
     }
   };
 
@@ -165,9 +160,10 @@ const PaymentsPage: React.FC = () => {
     return typesPaiement.find(t => t.value === type) || typesPaiement[0];
   };
 
-  const totalPaye = payments.filter(p => p.statut === 'paye').reduce((acc, p) => acc + p.montant, 0);
-  const totalEnAttente = payments.filter(p => p.statut === 'en_attente').reduce((acc, p) => acc + p.montant, 0);
-  const totalEnRetard = payments.filter(p => p.statut === 'en_retard').reduce((acc, p) => acc + p.montant, 0);
+  // Compute totals based on montantRestant and montantTotal
+  const totalPaye = payments.filter(p => p.montantRestant === 0).reduce((acc, p) => acc + (p.montantPaye || 0), 0);
+  const totalEnAttente = payments.filter(p => p.montantRestant > 0 && p.montantRestant < p.montantTotal).reduce((acc, p) => acc + (p.montantPaye || 0), 0);
+  const totalEnRetard = payments.filter(p => p.montantRestant >= p.montantTotal).reduce((acc, p) => acc + (p.montantPaye || 0), 0);
 
   return (
     <div className="mt-10 w-full min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
@@ -320,22 +316,53 @@ const PaymentsPage: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredPayments.map((payment) => {
-                  const statutInfo = getStatutInfo(payment.statut);
-                  const typeInfo = getTypeInfo(payment.typePaiement);
-                  
+                  // Get latest paiement entry for type
+                  const lastPaiement = Array.isArray(payment.paiements) && payment.paiements.length > 0 ? payment.paiements[payment.paiements.length - 1] : null;
+                  const typePaiement = lastPaiement?.typePaiement || '';
+                  const typeInfo = getTypeInfo(typePaiement);
+                  // Statut: compute from montantRestant
+                  let statut = 'paye';
+                  if (typeof payment.montantRestant === 'number') {
+                    if (payment.montantRestant > 0 && payment.montantRestant < payment.montantTotal) statut = 'en_attente';
+                    else if (payment.montantRestant >= payment.montantTotal) statut = 'en_retard';
+                    else if (payment.montantRestant === 0) statut = 'paye';
+                  }
+                  const statutInfo = getStatutInfo(statut);
+                  let eleve = null;
+                  if (payment.eleveId) {
+                    if (Array.isArray(payment.eleveId)) {
+                      eleve = payment.eleveId[0] || null;
+                    } else if (typeof payment.eleveId === 'object') {
+                      eleve = payment.eleveId;
+                    }
+                  }
+                  const eleveNom = eleve?.nom || '';
+                  const elevePrenom = eleve?.prenom || '';
+                  const eleveMatricule = eleve?.matricule || '';
+                  let eleveClasse = '';
+                  if (eleve?.classeId) {
+                    if (typeof eleve.classeId === 'object' && eleve.classeId !== null) {
+                      eleveClasse = eleve.classeId.nom || '';
+                    } else if (typeof eleve.classeId === 'string' && payment.classeId && typeof payment.classeId === 'object') {
+                      eleveClasse = payment.classeId.nom || '';
+                    }
+                  }
                   return (
-                    <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <tr key={payment._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-                            <FontAwesomeIcon icon={faUser} className="text-blue-600 dark:text-blue-400" />
-                          </div>
+                        {eleve ? (
                           <div>
                             <div className="text-sm font-medium text-gray-900 dark:text-white">
-                              {payment.elevePrenom} {payment.eleveNom}
+                              {elevePrenom} {eleveNom}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {eleveMatricule && (<span>Matricule : {eleveMatricule} <br /></span>)}
+                              {eleveClasse && (<span>Classe : {eleveClasse}</span>)}
                             </div>
                           </div>
-                        </div>
+                        ) : (
+                          <span className="text-xs text-gray-400 italic">Non renseigné</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${typeInfo.color}`}>
@@ -343,12 +370,21 @@ const PaymentsPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
-                        {payment.montant.toLocaleString('fr-FR')} FCFA
+                        {typeof payment.montantPaye === 'number' && !isNaN(payment.montantPaye) ? payment.montantPaye.toLocaleString('fr-FR') : ''} GNF
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center">
                           <FontAwesomeIcon icon={faCalendar} className="mr-2 w-4" />
-                          {new Date(payment.datePaiement).toLocaleDateString('fr-FR')}
+                          {(() => {
+                            // Use latest paiement entry for date
+                            const lastPaiement = Array.isArray(payment.paiements) && payment.paiements.length > 0 ? payment.paiements[payment.paiements.length - 1] : null;
+                            const dateStr = lastPaiement?.datePaiement;
+                            if (dateStr) {
+                              const d = new Date(dateStr);
+                              return !isNaN(d.getTime()) ? d.toLocaleDateString('fr-FR') : '';
+                            }
+                            return '';
+                          })()}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -360,7 +396,7 @@ const PaymentsPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center">
                           <FontAwesomeIcon icon={faReceipt} className="mr-2 w-4" />
-                          {payment.reference}
+                          {payment._id}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -372,7 +408,7 @@ const PaymentsPage: React.FC = () => {
                             <FontAwesomeIcon icon={faEdit} />
                           </button>
                           <button
-                            onClick={() => handleDeletePayment(payment.id)}
+                            onClick={() => handleDeletePayment(payment._id)}
                             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                           >
                             <FontAwesomeIcon icon={faTrash} />
@@ -384,6 +420,25 @@ const PaymentsPage: React.FC = () => {
                 })}
               </tbody>
             </table>
+            <div className="flex justify-center mt-4 gap-4">
+  <button
+    disabled={page === 1}
+    onClick={() => setPage(page - 1)}
+    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+  >
+    Précédent
+  </button>
+  <span>
+    Page {page} / {Math.max(1, Math.ceil(total / limit))}
+  </span>
+  <button
+    disabled={page >= Math.ceil(total / limit)}
+    onClick={() => setPage(page + 1)}
+    className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+  >
+    Suivant
+  </button>
+</div>
           </div>
         </div>
 
@@ -393,29 +448,20 @@ const PaymentsPage: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-lg mx-4">
               <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Nouveau paiement</h2>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Nom de l'élève *
-                    </label>
-                    <input
-                      type="text"
-                      value={newPayment.eleveNom}
-                      onChange={(e) => setNewPayment({...newPayment, eleveNom: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Prénom de l'élève *
-                    </label>
-                    <input
-                      type="text"
-                      value={newPayment.elevePrenom}
-                      onChange={(e) => setNewPayment({...newPayment, elevePrenom: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Élève *
+                  </label>
+                  <select
+                    value={newPayment.eleveId}
+                    onChange={e => setNewPayment({ ...newPayment, eleveId: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="">Sélectionner un élève</option>
+                    {eleves.map(eleve => (
+                      <option key={eleve._id} value={eleve._id}>{eleve.prenom} {eleve.nom}</option>
+                    ))}
+                  </select>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -451,7 +497,7 @@ const PaymentsPage: React.FC = () => {
                     </label>
                     <select
                       value={newPayment.typePaiement}
-                      onChange={(e) => setNewPayment({...newPayment, typePaiement: e.target.value as any})}
+                      onChange={(e) => setNewPayment({...newPayment, typePaiement: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
                       {typesPaiement.map(type => (
@@ -465,7 +511,7 @@ const PaymentsPage: React.FC = () => {
                     </label>
                     <select
                       value={newPayment.statut}
-                      onChange={(e) => setNewPayment({...newPayment, statut: e.target.value as any})}
+                      onChange={(e) => setNewPayment({...newPayment, statut: e.target.value})}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
                       {statuts.map(statut => (
@@ -481,7 +527,7 @@ const PaymentsPage: React.FC = () => {
                   </label>
                   <select
                     value={newPayment.methodePaiement}
-                    onChange={(e) => setNewPayment({...newPayment, methodePaiement: e.target.value as any})}
+                    onChange={(e) => setNewPayment({...newPayment, methodePaiement: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="especes">Espèces</option>
