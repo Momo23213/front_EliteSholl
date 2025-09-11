@@ -14,10 +14,25 @@ export default function Login() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
 
+  // 🔹 Fonction pour déterminer la route selon le rôle
+  const getRedirectPath = (role: string) => {
+    switch (role) {
+      case "admin":
+        return "/admin/dashboard";
+      case "enseignant":
+        return "/teacher/dashboard";
+      case "eleve":
+        return "/eleve/dashboard";
+      default:
+        return "/"; // fallback
+    }
+  };
+
   // 🔹 Redirection si déjà connecté
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      const path = getRedirectPath(user.role);
+      navigate(path, { replace: true });
     }
   }, [user, navigate]);
 
@@ -27,8 +42,9 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(email, password); // appel API via AuthContext
-      navigate("/dashboard"); // redirection après connexion
+      const loggedUser = await login(email, password); // retour avec rôle
+      const path = getRedirectPath(loggedUser.role);
+      navigate(path, { replace: true }); // redirection selon rôle
     } catch {
       setError("Email ou mot de passe incorrect");
     } finally {
@@ -134,7 +150,7 @@ export default function Login() {
 
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            © 2024 EcoleManager. Tous droits réservés.
+            © 2024 Elite School. Tous droits réservés.
           </p>
         </div>
       </div>

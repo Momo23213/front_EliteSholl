@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import NoteFormTable from '../formulaires/note/NoteFormTable';
+import NoteFormTable from '../../formulaires/note/NoteFormTable';
 
 const NotesSaisie: React.FC = () => {
   const navigate = useNavigate();

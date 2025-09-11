@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Modal } from "../components/Modal"; // Assurez-vous d'avoir ce composant de modale
-import EnseignantsDisplay from "../formulaires/enseignants/EnseignantsDisplay"; // Le composant de liste que nous avons créé
-import EnseignantForm from "../formulaires/enseignants/EnseignantForm"; // Le formulaire que nous avons créé
-import { Enseignant } from "../types/types"; // L'interface Enseignant
+import { Modal } from "../../components/Modal"; // Assurez-vous d'avoir ce composant de modale
+import EnseignantsDisplay from "../../formulaires/enseignants/EnseignantsDisplay"; // Le composant de liste que nous avons créé
+import EnseignantForm from "../../formulaires/enseignants/EnseignantForm"; // Le formulaire que nous avons créé
+import { Enseignant } from "../../types/types"; // L'interface Enseignant
 
 // Données fictives (à remplacer par vos données réelles)
 const enseignant: Enseignant[] = [

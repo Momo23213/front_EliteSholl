@@ -8,7 +8,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, 
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
 } from "recharts";
-import { useSchool } from "../contexts/SchoolContext";
+import { useSchool } from "../../contexts/SchoolContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faBell, faExclamationTriangle, faCheckCircle, faClock, 

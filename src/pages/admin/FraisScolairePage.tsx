@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Modal } from "../components/Modal";
-import EleveForm from "../components/eleves/FomEleves";
-import EditStudentForm from "../components/eleves/EditStudentModal";
-import { FraisScolarite } from "../types/types";
-import { fraiService } from "../services/fraisScolaire";
-import FraiDisplay from "../formulaires/paiements/FraisDisplay";
+import { Modal } from "../../components/Modal";
+import EleveForm from "../../components/eleves/FomEleves";
+import EditStudentForm from "../../components/eleves/EditStudentModal";
+import { FraisScolarite } from "../../types/types";
+import { fraiService } from "../../services/fraisScolaire";
+import FraiDisplay from "../../formulaires/paiements/FraisDisplay";
 
 
 function FraiScolairePage() {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../components/Modal';
+import Modal from '../../components/Modal';
 import StudentSelectionList from '../components/StudentSelectionList';
 import StudentEnrollmentForm from '../components/StudentEnrollmentForm';
 import AddStudentForm from '../src/faetures/students/AddStudentForm'; // 👈 Importez le formulaire d'ajout

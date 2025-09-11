@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Modal } from "../components/Modal";
-import ElevesDisplay from "../components/eleves/ElevesDisplay";
-import EleveForm from "../components/eleves/FomEleves";
-import EditStudentForm from "../components/eleves/EditStudentModal";
-import ReinscriptionEleveModal from "../components/eleves/ReinscriptionEleveModal";
-import { Eleve } from "../types/types";
-import { eleveService } from "../services/eleveService";
+import { Modal } from "../../components/Modal";
+import ElevesDisplay from "../../components/eleves/ElevesDisplay";
+import EleveForm from "../../components/eleves/FomEleves";
+import EditStudentForm from "../../components/eleves/EditStudentModal";
+import ReinscriptionEleveModal from "../../components/eleves/ReinscriptionEleveModal";
+import { Eleve } from "../../types/types";
+import { eleveService } from "../../services/eleveService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUserGraduate, 

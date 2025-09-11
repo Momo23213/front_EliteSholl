@@ -3,76 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
 import {
   Menu, X, Home, Users, BookOpen, Book, GraduationCap, DollarSign, User, Sun, Moon,
-  LogOut, Calendar, ChevronDown,WalletCards
+  LogOut, Calendar, ChevronDown, WalletCards
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationSystem from '../components/NotificationSystem';
+
 type LinkItem = { name: string; path: string; icon?: any };
 type LinkGroup = { label: string; icon?: any; items: LinkItem[] };
 
-const navGroups: LinkGroup[] = [
-  {
-    label: "Accueil",
-    icon: Home,
-    items: [{ name: "Tableau de bord", path: "/", icon: Home }]
-  },
-  {
-    label: "Scolarité",
-    icon: GraduationCap,
-    items: [
-      { name: "Élèves", path: "/eleves", icon: Users },
-      { name: "Classes", path: "/classes", icon: BookOpen },
-      { name: "Enseignants", path: "/enseignants", icon: GraduationCap },
-      { name: "Matières", path: "/matieres", icon: Book }
-    ]
-  },
-  {
-    label: "Notes",
-    icon: BookOpen,
-    items: [
-      { name: "Notes", path: "/notes", icon: BookOpen },
-      { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
-      { name: "Saisie", path: "/notes/saisie", icon: BookOpen }
-    ]
-  },
-  {
-    label: "Comptabilité",
-    icon: DollarSign,
-    items: [
-      { name: "Paiements", path: "/paiements", icon: DollarSign },
-      { name: "Controle Scolaire", path: "/controleScolaire", icon: DollarSign },
-      { name: "Frai Scolaire", path: "/fraiScolaire", icon: WalletCards  },
-      { name: "Calendrier", path: "/calendrier", icon: Calendar },
-      { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar }
-    ]
-  },
-  {
-    label: "Compte",
-    icon: User,
-    items: [
-      { name: "Profil", path: "/login", icon: User }
-    ]
-  }
-];
-
-// Liens mobiles à plat (comme avant)
-const navMobileLinks: LinkItem[] = [
-  { name: "Tableau de bord", path: "/", icon: Home },
-  { name: "Élèves", path: "/eleves", icon: Users },
-  { name: "Enseignants", path: "/enseignants", icon: GraduationCap },
-  { name: "Classes", path: "/classes", icon: BookOpen },
-  { name: "Matières", path: "/matieres", icon: Book },
-  { name: "Notes", path: "/notes", icon: BookOpen },
-  { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
-  { name: "Saisie", path: "/notes/saisie", icon: BookOpen },
-  { name: "Paiements", path: "/paiements", icon: DollarSign },
-  { name: "Calendrier", path: "/calendrier", icon: Calendar },
-  { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
-  { name: "Profil", path: "/login", icon: User },
-];
-
 const Navbar: React.FC = () => {
-   const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(
@@ -80,11 +20,169 @@ const Navbar: React.FC = () => {
     (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
   );
 
-   const handleLogout = () => {
+  // ------------------------------
+  // Définition des menus par rôle
+  // ------------------------------
+  let navGroups: LinkGroup[] = [];
+  let navMobileLinks: LinkItem[] = [];
+
+  if (user.role === 'admin') {
+    navGroups = [
+      {
+        label: "Accueil",
+        icon: Home,
+        items: [{ name: "Tableau de bord", path: "/", icon: Home }]
+      },
+      {
+        label: "Scolarité",
+        icon: GraduationCap,
+        items: [
+          { name: "Élèves", path: "/eleves", icon: Users },
+          { name: "Classes", path: "/classes", icon: BookOpen },
+          { name: "Enseignants", path: "/enseignants", icon: GraduationCap },
+          { name: "Matières", path: "/matieres", icon: Book }
+        ]
+      },
+      {
+        label: "Notes",
+        icon: BookOpen,
+        items: [
+          { name: "Notes", path: "/notes", icon: BookOpen },
+          { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
+          { name: "Saisie", path: "/notes/saisie", icon: BookOpen }
+        ]
+      },
+      {
+        label: "Comptabilité",
+        icon: DollarSign,
+        items: [
+          { name: "Paiements", path: "/paiements", icon: DollarSign },
+          { name: "Contrôle Scolaire", path: "/controleScolaire", icon: DollarSign },
+          { name: "Frai Scolaire", path: "/fraiScolaire", icon: WalletCards },
+          { name: "Calendrier", path: "/calendrier", icon: Calendar },
+          { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar }
+        ]
+      },
+      {
+        label: "Compte",
+        icon: User,
+        items: [{ name: "Profil", path: "/profil", icon: User }]
+      }
+    ];
+
+    navMobileLinks = [
+      { name: "Tableau de bord", path: "/", icon: Home },
+      { name: "Élèves", path: "/eleves", icon: Users },
+      { name: "Enseignants", path: "/enseignants", icon: GraduationCap },
+      { name: "Classes", path: "/classes", icon: BookOpen },
+      { name: "Matières", path: "/matieres", icon: Book },
+      { name: "Notes", path: "/notes", icon: BookOpen },
+      { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
+      { name: "Saisie", path: "/notes/saisie", icon: BookOpen },
+      { name: "Paiements", path: "/paiements", icon: DollarSign },
+      { name: "Calendrier", path: "/calendrier", icon: Calendar },
+      { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+      { name: "Profil", path: "/profil", icon: User },
+    ];
+  }
+
+  if (user.role === 'enseignant') {
+    navGroups = [
+      {
+        label: "Accueil",
+        icon: Home,
+        items: [{ name: "Tableau de bord", path: "/", icon: Home }]
+      },
+      {
+        label: "Scolarité",
+        icon: GraduationCap,
+        items: [
+          { name: "Mes Classes", path: "/mes-classes", icon: GraduationCap },
+          { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar }
+        ]
+      },
+      {
+        label: "Notes",
+        icon: BookOpen,
+        items: [
+          { name: "Saisie Notes", path: "/notes/saisie", icon: BookOpen },
+          { name: "Résultats", path: "/notes/resultats", icon: BookOpen }
+        ]
+      },
+      {
+        label: "Compte",
+        icon: User,
+        items: [{ name: "Profil", path: "/profil", icon: User }]
+      }
+    ];
+
+    navMobileLinks = [
+      { name: "Tableau de bord", path: "/", icon: Home },
+      { name: "Mes Classes", path: "/mes-classes", icon: GraduationCap },
+      { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+      { name: "Saisie Notes", path: "/notes/saisie", icon: BookOpen },
+      { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
+      { name: "Profil", path: "/profil", icon: User },
+    ];
+  }
+
+  if (user.role === 'eleve') {
+    navGroups = [
+      {
+        label: "Accueil",
+        icon: Home,
+        items: [{ name: "Tableau de bord", path: "/", icon: Home }]
+      },
+      {
+        label: "Scolarité",
+        icon: GraduationCap,
+        items: [
+          { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+          { name: "Calendrier", path: "/calendrier", icon: Calendar }
+        ]
+      },
+      {
+        label: "Notes",
+        icon: BookOpen,
+        items: [
+          { name: "Mes Notes", path: "/notes", icon: BookOpen },
+          { name: "Résultats", path: "/notes/resultats", icon: BookOpen }
+        ]
+      },
+      {
+        label: "Paiements",
+        icon: DollarSign,
+        items: [
+          { name: "Historique", path: "/paiements", icon: DollarSign }
+        ]
+      },
+      {
+        label: "Compte",
+        icon: User,
+        items: [{ name: "Profil", path: "/profil", icon: User }]
+      }
+    ];
+
+    navMobileLinks = [
+      { name: "Tableau de bord", path: "/", icon: Home },
+      { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+      { name: "Calendrier", path: "/calendrier", icon: Calendar },
+      { name: "Mes Notes", path: "/notes", icon: BookOpen },
+      { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
+      { name: "Historique Paiements", path: "/paiements", icon: DollarSign },
+      { name: "Profil", path: "/profil", icon: User },
+    ];
+  }
+
+  // ------------------------------
+  // Reste du code identique à NavbarAdmin
+  // ------------------------------
+  const handleLogout = () => {
     if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
       logout();
-      <Navigate to="/login" />
-    }}
+      <Navigate to="/" />;
+    }
+  };
 
   useEffect(() => {
     if (isDarkMode) {
@@ -96,13 +194,8 @@ const Navbar: React.FC = () => {
     }
   }, [isDarkMode]);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   const linkBaseStyle = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out";
   const linkInactiveStyle = "text-gray-600 dark:text-gray-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-gray-800 dark:hover:text-blue-400";

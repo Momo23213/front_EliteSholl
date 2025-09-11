@@ -3,7 +3,7 @@ import { Users, BookOpen, GraduationCap, CheckCircle } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid
 } from "recharts";
-import { useSchool } from "../contexts/SchoolContext";
+import { useSchool } from "../../contexts/SchoolContext";
 
 interface OccupancyData {
   name: string;

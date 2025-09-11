@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { noteService } from '../services/noteService';
+import { noteService } from '../../services/noteService';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 

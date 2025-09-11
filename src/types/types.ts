@@ -147,7 +147,7 @@ export interface User {
   nom: string;
   prenom: string;
   email: string;
-  role: "admin" | "professeur" | "eleve";
+  role: "admin" | "enseignant" | "eleve";
   password?: string;
 }
 

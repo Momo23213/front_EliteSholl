@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { classeService } from '../services/classeService';
+import { classeService } from '../../services/classeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faPlus, faEdit, faTrash, faSearch, faChartBar, faSpinner, faSort } from '@fortawesome/free-solid-svg-icons';
-import { matiereService } from '../services/matiereService';
-import { Matiere, Classe } from '../types/types';
+import { matiereService } from '../../services/matiereService';
+import { Matiere, Classe } from '../../types/types';
 import { CheckCircle, XCircle, BookOpen, BarChart3, Filter, SortAsc, Users, BookOpen as BookOpenIcon, Trophy, Star } from 'lucide-react';
-import '../styles/animations.css';
+import '../../styles/animations.css';
 
 const SubjectsPage: React.FC = () => {
   const [classes, setClasses] = useState<Classe[]>([]);

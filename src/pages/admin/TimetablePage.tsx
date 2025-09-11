@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faPlus, faSpinner, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Modal } from '../components/Modal';
-import AddTimetableForm from '../components/AddTimetableForm';
-import { classeService } from '../services/classeService';
-import { enseignantService } from '../services/enseignantService';
-import { matiereService } from '../services/matiereService';
-import { emploiService } from '../services/emploiService';
-import { Classe, Enseignant, Matiere, Emploi } from '../types/types';
+import { Modal } from '../../components/Modal';
+import AddTimetableForm from '../../components/AddTimetableForm';
+import { classeService } from '../../services/classeService';
+import { enseignantService } from '../../services/enseignantService';
+import { matiereService } from '../../services/matiereService';
+import { emploiService } from '../../services/emploiService';
+import { Classe, Enseignant, Matiere, Emploi } from '../../types/types';
 
 // Define Timetable interface for local use
 interface Timetable {

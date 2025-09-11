@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, Search, Filter, ChevronDown, Plus } from 'lucide-react';
-import { Modal } from '../components/Modal';
-import NoteFormTable from '../formulaires/note/NoteFormTable';
-import { noteService } from '../services/noteService';
+import { Modal } from '../../components/Modal';
+import NoteFormTable from '../../formulaires/note/NoteFormTable';
+import { noteService } from '../../services/noteService';
 
 // Définition des types pour les données
 type Eleve = {

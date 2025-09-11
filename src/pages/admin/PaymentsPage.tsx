@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { eleveService } from '../services/eleveService';
-import { paiementService } from '../services/paiementService';
+import { eleveService } from '../../services/eleveService';
+import { paiementService } from '../../services/paiementService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faDollarSign, 
@@ -17,7 +17,7 @@ import {
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
 
-import { Paiement } from '../types/types';
+import { Paiement } from '../../types/types';
 
 const PaymentsPage: React.FC = () => {
   const [payments, setPayments] = useState<Paiement[]>([]);

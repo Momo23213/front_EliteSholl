@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, ChevronDown } from 'lucide-react';
-import { DataScholl } from '../DataScholl';
-import { noteService } from '../services/noteService';
+import { DataScholl } from '../../DataScholl';
+import { noteService } from '../../services/noteService';
 
 // Définition des types
 interface AnneeScolaire {

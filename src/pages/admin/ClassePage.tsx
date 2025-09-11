@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { useSchool } from '../contexts/SchoolContext';
+import { useSchool } from '../../contexts/SchoolContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faBookOpen, 
@@ -28,7 +28,7 @@ import {
   Users2,
   BookOpen as BookIcon
 } from 'lucide-react';
-import '../styles/animations.css';
+import '../../styles/animations.css';
 
 interface Enseignant {
   _id: string;

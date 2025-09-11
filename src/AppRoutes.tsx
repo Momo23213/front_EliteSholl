@@ -1,46 +1,89 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/Login";
 import Navbar from "./layouts/Nav";
-import ClassePage from "./pages/ClassePage";
-import StudentsPage from "./pages/StudentsPage";
-import DetailEleve from "./pages/DetailEleve";
+import ClassePage from "./pages/admin/ClassePage";
+import StudentsPage from "./pages/admin/StudentsPage";
+import DetailEleve from "./pages/admin/DetailEleve";
 import PrivateRoute from "./components/ProtegeRoute";
-import EnhancedDashboardPage from "./pages/EnhancedDashboardPage";
-import NotesPages from "./pages/NotesPages";
-import NotesResultats from "./pages/NotesResultats";
-import NotesSaisie from "./pages/NotesSaisie";
-import TeachersPage from "./pages/TeachersPage";
-import SubjectsPage from "./pages/SubjectsPage";
-import PaymentsPage from "./pages/PaymentsPage";
-import CalendarPage from "./pages/CalendarPage";
-import TimetablePage from "./pages/TimetablePage";
-import ControlePaiement from "./pages/ControlePaiement";
-import FraiScolairePage from "./pages/FraisScolairePage";
+import EnhancedDashboardPage from "./pages/admin/EnhancedDashboardPage";
+import NotesPages from "./pages/admin/NotesPages";
+import NotesResultats from "./pages/admin/NotesResultats";
+import NotesSaisie from "./pages/admin/NotesSaisie";
+import TeachersPage from "./pages/admin/TeachersPage";
+import SubjectsPage from "./pages/admin/SubjectsPage";
+import PaymentsPage from "./pages/admin/PaymentsPage";
+import CalendarPage from "./pages/admin/CalendarPage";
+import TimetablePage from "./pages/admin/TimetablePage";
+import ControlePaiement from "./pages/admin/ControlePaiement";
+import FraiScolairePage from "./pages/admin/FraisScolairePage";
+import EleveDashboard from "./pages/eleves/Dashbord";
+import TeacherDashboard from "./pages/enseignant/Dashbord";
 function Layout() {
   const location = useLocation();
-  const cache = location.pathname === "/login";
+  const cache = location.pathname === "/";
   
   return (
     <div>
       {!cache && <Navbar/>}
       <div>
-        <Routes>
-          <Route path="/eleves/detail/:id" element={<DetailEleve />}/>
-          <Route path="/eleves" element={<StudentsPage />}></Route>
-          <Route path="/notes" element={<PrivateRoute> <NotesPages /></PrivateRoute> }/>
-          <Route path="/notes/resultats" element={<PrivateRoute> <NotesResultats /></PrivateRoute> }/>
-          <Route path="/notes/saisie" element={<PrivateRoute> <NotesSaisie /></PrivateRoute> }/>
-          <Route path="/classes" element={<PrivateRoute> <ClassePage /></PrivateRoute> }/>
-          <Route path="/enseignants" element={<PrivateRoute> <TeachersPage /></PrivateRoute> }/>
-          <Route path="/fraiScolaire" element={<PrivateRoute> <FraiScolairePage /></PrivateRoute> }/>
-          <Route path="/controleScolaire" element={<PrivateRoute> <ControlePaiement /></PrivateRoute> }/>
-          <Route path="/matieres" element={<PrivateRoute> <SubjectsPage /></PrivateRoute> }/>
-          <Route path="/paiements" element={<PrivateRoute> <PaymentsPage /></PrivateRoute> }/>
-          <Route path="/calendrier" element={<PrivateRoute> <CalendarPage /></PrivateRoute> }/>
-          <Route path="/emploi-du-temps" element={<PrivateRoute> <TimetablePage /></PrivateRoute> }/>
-          <Route path="/" element={<PrivateRoute> <EnhancedDashboardPage /></PrivateRoute> }/>
-          <Route path="/login" element={<Login />}/>
-        </Routes>
+      <Routes>
+  {/* Public */}
+  <Route path="/" element={<Login />} />
+
+  {/* Admin */}
+  <Route path="/admin/dashboard" element={
+    <PrivateRoute roles={["admin"]}><EnhancedDashboardPage /></PrivateRoute>
+  }/>
+  <Route path="/eleves" element={
+    <PrivateRoute roles={["admin"]}><StudentsPage /></PrivateRoute>
+  }/>
+  <Route path="/classes" element={
+    <PrivateRoute roles={["admin"]}><ClassePage /></PrivateRoute>
+  }/>
+  <Route path="/enseignants" element={
+    <PrivateRoute roles={["admin"]}><TeachersPage /></PrivateRoute>
+  }/>
+  <Route path="/matieres" element={
+    <PrivateRoute roles={["admin"]}><SubjectsPage /></PrivateRoute>
+  }/>
+  <Route path="/notes" element={
+    <PrivateRoute roles={["admin"]}><NotesPages /></PrivateRoute>
+  }/>
+  <Route path="/notes/resultats" element={
+    <PrivateRoute roles={["admin"]}><NotesResultats /></PrivateRoute>
+  }/>
+  <Route path="/notes/saisie" element={
+    <PrivateRoute roles={["admin", "enseignant"]}><NotesSaisie /></PrivateRoute>
+  }/>
+  <Route path="/paiements" element={
+    <PrivateRoute roles={["admin", "eleve"]}><PaymentsPage /></PrivateRoute>
+  }/>
+  <Route path="/fraiScolaire" element={
+    <PrivateRoute roles={["admin"]}><FraiScolairePage /></PrivateRoute>
+  }/>
+  <Route path="/controleScolaire" element={
+    <PrivateRoute roles={["admin"]}><ControlePaiement /></PrivateRoute>
+  }/>
+  <Route path="/calendrier" element={
+    <PrivateRoute roles={["admin", "eleve", "enseignant"]}><CalendarPage /></PrivateRoute>
+  }/>
+  <Route path="/emploi-du-temps" element={
+    <PrivateRoute roles={["admin", "eleve", "enseignant"]}><TimetablePage /></PrivateRoute>
+  }/>
+  <Route path="/eleves/detail/:id" element={
+    <PrivateRoute roles={["admin"]}><DetailEleve /></PrivateRoute>
+  }/>
+
+  {/* Enseignant */}
+  <Route path="/teacher/dashboard" element={
+    <PrivateRoute roles={["enseignant"]}><TeacherDashboard /></PrivateRoute>
+  }/>
+
+  {/* Élève */}
+  <Route path="/eleve/dashboard" element={
+    <PrivateRoute roles={["eleve"]}><EleveDashboard /></PrivateRoute>
+  }/>
+</Routes>
       </div>
     </div>
   );
