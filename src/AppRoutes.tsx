@@ -14,6 +14,8 @@ import SubjectsPage from "./pages/SubjectsPage";
 import PaymentsPage from "./pages/PaymentsPage";
 import CalendarPage from "./pages/CalendarPage";
 import TimetablePage from "./pages/TimetablePage";
+import ControlePaiement from "./pages/ControlePaiement";
+import FraiScolairePage from "./pages/FraisScolairePage";
 function Layout() {
   const location = useLocation();
   const cache = location.pathname === "/login";
@@ -30,6 +32,8 @@ function Layout() {
           <Route path="/notes/saisie" element={<PrivateRoute> <NotesSaisie /></PrivateRoute> }/>
           <Route path="/classes" element={<PrivateRoute> <ClassePage /></PrivateRoute> }/>
           <Route path="/enseignants" element={<PrivateRoute> <TeachersPage /></PrivateRoute> }/>
+          <Route path="/fraiScolaire" element={<PrivateRoute> <FraiScolairePage /></PrivateRoute> }/>
+          <Route path="/controleScolaire" element={<PrivateRoute> <ControlePaiement /></PrivateRoute> }/>
           <Route path="/matieres" element={<PrivateRoute> <SubjectsPage /></PrivateRoute> }/>
           <Route path="/paiements" element={<PrivateRoute> <PaymentsPage /></PrivateRoute> }/>
           <Route path="/calendrier" element={<PrivateRoute> <CalendarPage /></PrivateRoute> }/>

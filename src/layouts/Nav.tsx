@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
 import {
   Menu, X, Home, Users, BookOpen, Book, GraduationCap, DollarSign, User, Sun, Moon,
-  LogOut, Calendar, ChevronDown
+  LogOut, Calendar, ChevronDown,WalletCards
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationSystem from '../components/NotificationSystem';
@@ -36,10 +36,12 @@ const navGroups: LinkGroup[] = [
     ]
   },
   {
-    label: "Administration",
+    label: "Comptabilité",
     icon: DollarSign,
     items: [
       { name: "Paiements", path: "/paiements", icon: DollarSign },
+      { name: "Controle Scolaire", path: "/controleScolaire", icon: DollarSign },
+      { name: "Frai Scolaire", path: "/fraiScolaire", icon: WalletCards  },
       { name: "Calendrier", path: "/calendrier", icon: Calendar },
       { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar }
     ]

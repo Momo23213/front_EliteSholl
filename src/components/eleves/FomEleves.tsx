@@ -38,6 +38,11 @@ const EleveForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
 
+  // Styles CSS
+  const labelStyle = "flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2";
+  const inputStyle = "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all";
+  const errorStyle = "text-red-500 text-sm mt-1";
+
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<Eleve>();
 
   const photoWatch = watch("photo");
@@ -169,9 +174,9 @@ const EleveForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
               <button type="reset" className="flex items-center gap-2 px-5 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"><XCircle className="w-4 h-4" />Annuler</button>
               <button type="submit" className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold shadow hover:from-blue-700 hover:to-purple-700 transition-all"><CheckCircle className="w-4 h-4" />Enregistrer l&#39;élève</button>
             </div>
-          </form>
-        </div>
-      );
+      </form>
+    </div>
+  );
 };
 
 export default EleveForm;
