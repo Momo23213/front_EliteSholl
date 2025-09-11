@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3002/api", // 👉 adapte ton backend
+  baseURL: "https://schoolelite.onrender.com/api", // 👉 adapte ton backend
   withCredentials: true, // ⚡ cookies activés
   headers: {
     "Content-Type": "application/json",
