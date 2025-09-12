@@ -23,7 +23,7 @@ interface Timetable {
 }
 
 // Get API base URL from environment
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://schoolelite.onrender.com';
 
 const TimetablePage: React.FC = () => {
   const [classes, setClasses] = useState<Classe[]>([]);

@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Sun, Moon, BookOpen, Calendar, Users, Book } from "lucide-react";
-// Exemple types
-type Note = { eleve: string; matiere: string; note: number };
-type Classe = { nom: string; elevesCount: number };
+
+// Types pour les données
+type Note = {
+  eleve: string;
+  matiere: string;
+  note: number;
+};
+
+type Classe = {
+  nom: string;
+  elevesCount: number;
+};
 
 const TeacherDashboard: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(
+  // Dark mode
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(
     localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
   );
 
+  // Données
   const [notes, setNotes] = useState<Note[]>([]);
   const [classes, setClasses] = useState<Classe[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
+  // Effet dark mode
   useEffect(() => {
-    // Dark mode
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
       localStorage.theme = "dark";
@@ -26,10 +37,10 @@ const TeacherDashboard: React.FC = () => {
     }
   }, [isDarkMode]);
 
-  // Fake fetch données
+  // Fake fetch des données
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setNotes([
         { eleve: "Aliou", matiere: "Mathématiques", note: 15 },
         { eleve: "Fatou", matiere: "Français", note: 12 },
@@ -41,11 +52,12 @@ const TeacherDashboard: React.FC = () => {
       ]);
       setLoading(false);
     }, 800);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
       <div className="container mx-auto px-4 py-6">
         {/* Header + Dark mode toggle */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">

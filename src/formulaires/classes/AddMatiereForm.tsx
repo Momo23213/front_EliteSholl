@@ -33,8 +33,8 @@ export default function AddMatiereForm({ onSuccess, onCancel, onError }: AddMati
     const fetchSelectData = async () => {
       try {
         const [classesRes, matieresRes] = await Promise.all([
-          axios.get<Classe[]>('http://localhost:3002/api/classe'),
-          axios.get<Matiere[]>('http://localhost:3002/api/matieres'),
+          axios.get<Classe[]>('https://schoolelite.onrender.com/api/classe'),
+          axios.get<Matiere[]>('https://schoolelite.onrender.com/api/matieres'),
         ]);
         setClasses(classesRes.data);
         setMatieres(matieresRes.data);
@@ -65,7 +65,7 @@ export default function AddMatiereForm({ onSuccess, onCancel, onError }: AddMati
     }
 
     try {
-      await axios.post('http://localhost:3002/api/classe/addMatiere', formData);
+      await axios.post('https://schoolelite.onrender.com/api/classe/addMatiere', formData);
       onSuccess();
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {

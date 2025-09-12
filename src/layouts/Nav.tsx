@@ -3,7 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, NavLink } from 'react-router-dom';
 import {
   Menu, X, Home, Users, BookOpen, Book, GraduationCap, DollarSign, User, Sun, Moon,
-  LogOut, Calendar, ChevronDown, WalletCards
+  LogOut, Calendar, ChevronDown, WalletCards,
+  MessageCircle,
+  Calendar1,
+  Star,
+  School
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationSystem from '../components/NotificationSystem';
@@ -66,7 +70,13 @@ const Navbar: React.FC = () => {
       {
         label: "Compte",
         icon: User,
-        items: [{ name: "Profil", path: "/profil", icon: User }]
+        items: [
+          { name: "Mon Ecole", path: "/profil", icon: School },
+          { name: "Profil", path: "/profil", icon: User },
+          { name: "Message", path: "/profil", icon: MessageCircle },
+          { name: "Année scolaire", path: "/profil", icon: Calendar1 },
+          { name: "premiu", path: "/profil", icon: Star },
+        ]
       }
     ];
 
@@ -82,7 +92,11 @@ const Navbar: React.FC = () => {
       { name: "Paiements", path: "/paiements", icon: DollarSign },
       { name: "Calendrier", path: "/calendrier", icon: Calendar },
       { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+      { name: "Mon Ecole", path: "/profil", icon: School },
       { name: "Profil", path: "/profil", icon: User },
+      { name: "Message", path: "/profil", icon: MessageCircle },
+      { name: "Année scolaire", path: "/profil", icon: Calendar1 },
+      { name: "premiu", path: "/profil", icon: Star },
     ];
   }
 
@@ -98,7 +112,8 @@ const Navbar: React.FC = () => {
         icon: GraduationCap,
         items: [
           { name: "Mes Classes", path: "/mes-classes", icon: GraduationCap },
-          { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar }
+          { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
+          { name: "Message", path: "/profil", icon: MessageCircle },
         ]
       },
       {
@@ -122,6 +137,7 @@ const Navbar: React.FC = () => {
       { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
       { name: "Saisie Notes", path: "/notes/saisie", icon: BookOpen },
       { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
+      { name: "Message", path: "/profil", icon: MessageCircle },
       { name: "Profil", path: "/profil", icon: User },
     ];
   }
@@ -138,7 +154,8 @@ const Navbar: React.FC = () => {
         icon: GraduationCap,
         items: [
           { name: "Emploi du temps", path: "/emploi-du-temps", icon: Calendar },
-          { name: "Calendrier", path: "/calendrier", icon: Calendar }
+          { name: "Calendrier", path: "/calendrier", icon: Calendar },
+          { name: "Message", path: "/profil", icon: MessageCircle },
         ]
       },
       {
@@ -170,6 +187,7 @@ const Navbar: React.FC = () => {
       { name: "Mes Notes", path: "/notes", icon: BookOpen },
       { name: "Résultats", path: "/notes/resultats", icon: BookOpen },
       { name: "Historique Paiements", path: "/historique", icon: DollarSign },
+      { name: "Message", path: "/profil", icon: MessageCircle },
       { name: "Profil", path: "/profil", icon: User },
     ];
   }

@@ -50,32 +50,11 @@ const ElevesDisplay: React.FC<ElevesDisplayProps> = ({ eleves, onEdit, onDelete,
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-200">
-      <div className="container mx-auto">
-        {/* En-tête de la page */}
-        <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white">Gestion des Élèves</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">Organisez et gérez les informations de vos élèves.</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 transform hover:scale-105" onClick={onAddEleve}>
-              <Plus className="w-4 h-4 mr-2" />
-              Inscrire un élève
-            </button>
-            <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105" onClick={onReinsEleve}>
-              <GraduationCap className="w-4 h-4 mr-2" />
-              Réinscrire
-            </button>
-            <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105" onClick={onScolariteCheck}>
-              <DollarSign className="w-4 h-4 mr-2" />
-              Contrôle scolarité
-            </button>
-          </div>
-        </header>
-
+    <div >
+      <div className="container w-full">
+  
         {/* Barre de recherche et filtres */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 mb-8 animate-slide-up-delay-2">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1 relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

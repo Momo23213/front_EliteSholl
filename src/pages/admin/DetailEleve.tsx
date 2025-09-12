@@ -80,9 +80,9 @@ const DetailEleve: React.FC = () => {
     const fetchData = async () => {
       try {
         const [eleveRes, paiementRes, noteRes] = await Promise.all([
-          axios.get(`http://localhost:3002/api/eleves/${id}`),
-          axios.get(`http://localhost:3002/api/paiement/eleves/${id}`),
-          axios.get(`http://localhost:3002/api/notes/eleve/${id}`),
+          axios.get(`https://schoolelite.onrender.com/api/eleves/${id}`),
+          axios.get(`https://schoolelite.onrender.com/api/paiement/eleves/${id}`),
+          axios.get(`https://schoolelite.onrender.com/api/notes/eleve/${id}`),
         ]);
 
         setEleve(eleveRes.data);
@@ -116,7 +116,7 @@ const DetailEleve: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl shadow">
         {eleve.photo && (
           <img
-            src={`http://localhost:3002${eleve.photo}`}
+            src={`https://schoolelite.onrender.com${eleve.photo}`}
             alt="photo élève"
             className="w-24 h-24 rounded-full object-cover mb-4 md:mb-0"
           />

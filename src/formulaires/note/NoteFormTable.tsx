@@ -7,7 +7,7 @@ import { useSchool } from "../../contexts/SchoolContext";
 import { User, Book, GraduationCap, Layers, Award, CircleCheck, CircleAlert } from "lucide-react";
 import { NoteFormInputs, NoteDataForAPI } from "../../types/types";
 
-const API_URL = "http://localhost:3002/api/notes/tableau";
+const API_URL = "https://schoolelite.onrender.com/api/notes/tableau";
 
 const NoteFormTable: React.FC = () => {
   const navigate = useNavigate();

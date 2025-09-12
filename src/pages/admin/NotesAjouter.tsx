@@ -233,7 +233,7 @@ useEffect(() => {
                       <td className="px-6 py-4">{item.eleveId.classeId.nom}</td>
                     <td className="px-6 py-4">
                       <img
-                       src={`http://localhost:3002${item.eleveId.photo}`}
+                       src={`https://schoolelite.onrender.com${item.eleveId.photo}`}
                         alt={`${item.eleveId.prenom} ${item.eleveId.nom}`}
                         className="w-10 h-10 rounded-full object-cover"
                       />
@@ -274,7 +274,7 @@ useEffect(() => {
               >
                 <div className="flex items-center mb-3">
                   <img
-                    src={`http://localhost:3002${item.eleveId.photo}`}
+                    src={`https://schoolelite.onrender.com${item.eleveId.photo}`}
                     alt={`${item.eleveId.prenom} ${item.eleveId.nom}`}
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />

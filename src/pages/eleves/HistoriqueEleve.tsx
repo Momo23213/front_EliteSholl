@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import axios from "axios";
 
+// Types
 interface Classe {
   _id: string;
   nom: string;
@@ -70,24 +71,28 @@ interface Eleve {
 }
 
 const Historiques: React.FC = () => {
-     const { user } = useAuth();
+  const { user } = useAuth(); // Typage du user
   const [eleve, setEleve] = useState<Eleve | null>(null);
   const [paiements, setPaiements] = useState<Paiement[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
-    const id=user?.id
+
+  const id = user?.id;
+
   useEffect(() => {
+    if (!id) return;
+
     const fetchData = async () => {
       try {
         const [eleveRes, paiementRes, noteRes] = await Promise.all([
-          axios.get(`http://localhost:3002/api/eleves/${id}`),
-          axios.get(`http://localhost:3002/api/paiement/eleves/${id}`),
-          axios.get(`http://localhost:3002/api/notes/eleve/${id}`),
+          axios.get<Eleve>(`https://schoolelite.onrender.com/api/eleves/${id}`),
+          axios.get<Paiement[]>(`https://schoolelite.onrender.com/api/paiement/eleves/${id}`),
+          axios.get<Note[]>(`https://schoolelite.onrender.com/api/notes/eleve/${id}`),
         ]);
 
         setEleve(eleveRes.data);
         setPaiements(paiementRes.data);
         setNotes(
-          noteRes.data.sort((a: Note, b: Note) =>
+          noteRes.data.sort((a, b) =>
             a.anneeScolaireId.libelle.localeCompare(b.anneeScolaireId.libelle)
           )
         );
@@ -103,12 +108,11 @@ const Historiques: React.FC = () => {
 
   return (
     <div className="bg-gray-50 mt-10 w-full dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      {/* Bouton retour */}
-      {/* En-tête */}
+      {/* En-tête élève */}
       <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-6 bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl shadow">
         {eleve.photo && (
           <img
-            src={`http://localhost:3002${eleve.photo}`}
+            src={`https://schoolelite.onrender.com${eleve.photo}`}
             alt="photo élève"
             className="w-24 h-24 rounded-full object-cover mb-4 md:mb-0"
           />
@@ -125,36 +129,35 @@ const Historiques: React.FC = () => {
       </div>
 
       {/* Parcours scolaire */}
-      <div>
+      <div className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Parcours scolaire</h2>
+        {/* Desktop */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full table-fixed bg-gray-100 dark:bg-gray-800 rounded-2xl shadow">
+            <thead>
+              <tr className="bg-gray-200 dark:bg-gray-700">
+                <th className="w-1/5 px-4 py-2 text-left">Classe</th>
+                <th className="w-1/5 px-4 py-2 text-left">Année scolaire</th>
+                <th className="w-1/5 px-4 py-2 text-left">Date inscription</th>
+                <th className="w-1/5 px-4 py-2 text-left">Date sortie</th>
+                <th className="w-1/5 px-4 py-2 text-left">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              {eleve.parcours.map((p) => (
+                <tr key={p._id} className="border-b border-gray-300 dark:border-gray-600">
+                  <td className="px-4 py-2">{p.classeId.nom}</td>
+                  <td className="px-4 py-2">{p.anneeScolaireId?.libelle || "-"}</td>
+                  <td className="px-4 py-2">{new Date(p.dateInscription).toLocaleDateString("fr-FR")}</td>
+                  <td className="px-4 py-2">{p.dateSortie ? new Date(p.dateSortie).toLocaleDateString("fr-FR") : "-"}</td>
+                  <td className="px-4 py-2">{p.typeInscription}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        {/* Desktop: tableau */}
-       <div className="hidden md:block overflow-x-auto">
-  <table className="w-full table-fixed bg-gray-100 dark:bg-gray-800 rounded-2xl shadow">
-    <thead>
-      <tr className="bg-gray-200 dark:bg-gray-700">
-        <th className="w-1/5 px-4 py-2 text-left">Classe</th>
-        <th className="w-1/5 px-4 py-2 text-left">Année scolaire</th>
-        <th className="w-1/5 px-4 py-2 text-left">Date inscription</th>
-        <th className="w-1/5 px-4 py-2 text-left">Date sortie</th>
-        <th className="w-1/5 px-4 py-2 text-left">Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      {eleve.parcours.map((p) => (
-        <tr key={p._id} className="border-b border-gray-300 dark:border-gray-600">
-          <td className="px-4 py-2">{p.classeId.nom}</td>
-          <td className="px-4 py-2">{p.anneeScolaireId?.libelle || "-"}</td>
-          <td className="px-4 py-2">{new Date(p.dateInscription).toLocaleDateString("fr-FR")}</td>
-          <td className="px-4 py-2">{p.dateSortie ? new Date(p.dateSortie).toLocaleDateString("fr-FR") : "-"}</td>
-          <td className="px-4 py-2">{p.typeInscription}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
-        {/* Mobile: cartes */}
+        {/* Mobile */}
         <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
           {eleve.parcours.map((p) => (
             <div key={p._id} className="bg-gray-100 dark:bg-gray-800 rounded-2xl shadow p-4">
@@ -169,7 +172,7 @@ const Historiques: React.FC = () => {
       </div>
 
       {/* Paiements */}
-      <div>
+      <div className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Paiements</h2>
         {paiements.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -195,7 +198,7 @@ const Historiques: React.FC = () => {
       </div>
 
       {/* Notes */}
-      <div>
+      <div className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Notes</h2>
         {notes.length ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

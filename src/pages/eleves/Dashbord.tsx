@@ -2,23 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Sun, Moon, BookOpen, Calendar, DollarSign, User } from "lucide-react";
 import ProfileEleve from "./ProfileEleve";
 
-// Exemple types
-type Note = { matiere: string; note: number };
-type Paiement = { mois: string; montant: number; status: string };
+// Types pour les données
+type Note = {
+  matiere: string;
+  note: number;
+};
+
+type Paiement = {
+  mois: string;
+  montant: number;
+  status: "Payé" | "Non payé";
+};
 
 const EleveDashboard: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(
+  // Dark mode
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(
     localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
   );
 
+  // Données
   const [notes, setNotes] = useState<Note[]>([]);
   const [paiements, setPaiements] = useState<Paiement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
+  // Effet dark mode
   useEffect(() => {
-    // Dark mode
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
       localStorage.theme = "dark";
@@ -28,10 +38,10 @@ const EleveDashboard: React.FC = () => {
     }
   }, [isDarkMode]);
 
-  // Fake fetch données
+  // Fake fetch des données
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setNotes([
         { matiere: "Mathématiques", note: 15 },
         { matiere: "Français", note: 12 },
@@ -43,11 +53,12 @@ const EleveDashboard: React.FC = () => {
       ]);
       setLoading(false);
     }, 800);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-
       <div className="container mx-auto px-4 py-6">
         {/* Header + Dark mode toggle */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -68,7 +79,9 @@ const EleveDashboard: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:shadow-md transition">
             <BookOpen className="h-6 w-6 text-blue-500 mb-2" />
             <p className="text-gray-500 dark:text-gray-300 text-sm">Notes</p>
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">{notes.length}</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+              {notes.length}
+            </h2>
           </div>
           <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow hover:shadow-md transition">
             <Calendar className="h-6 w-6 text-green-500 mb-2" />
@@ -119,7 +132,8 @@ const EleveDashboard: React.FC = () => {
           )}
         </div>
       </div>
-      <ProfileEleve/>
+
+      <ProfileEleve />
     </div>
   );
 };

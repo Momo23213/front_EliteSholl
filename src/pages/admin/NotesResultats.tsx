@@ -393,7 +393,7 @@ const NotesPage: React.FC = () => {
   const exportBulletin = (eleve: EleveAvecStats) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
-    const studentPhotoUrl = eleve.photo ? `http://localhost:3002${eleve.photo}` : '';
+    const studentPhotoUrl = eleve.photo ? `https://schoolelite.onrender.com${eleve.photo}` : '';
     const styles = `
       <style>
         body { font-family: Arial, sans-serif; padding: 16px; }
@@ -615,7 +615,7 @@ const NotesPage: React.FC = () => {
               {elevesFiltres.map((eleve) => (
                 <tr key={eleve._id} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                   <td className="py-3 px-4">
-                      <img src={`http://localhost:3002${eleve.photo}`} alt={`Photo de ${eleve.prenom}`} className="w-10 h-10 rounded-full object-cover" />
+                      <img src={`https://schoolelite.onrender.com${eleve.photo}`} alt={`Photo de ${eleve.prenom}`} className="w-10 h-10 rounded-full object-cover" />
                   </td>
                   <td className="py-3 px-4 text-sm font-medium">{eleve.matricule}</td>
                   <td className="py-3 px-4 text-sm font-medium">{eleve.nom} {eleve.prenom}</td>
@@ -646,7 +646,7 @@ const NotesPage: React.FC = () => {
           {elevesFiltres.map(eleve => (
             <div key={eleve._id} className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-sm">
               <div className="flex items-center gap-3">
-                <img src={`http://localhost:3002${eleve.photo}`} alt={`Photo de ${eleve.prenom}`} className="h-12 w-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-800" />
+                <img src={`https://schoolelite.onrender.com${eleve.photo}`} alt={`Photo de ${eleve.prenom}`} className="h-12 w-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-800" />
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold truncate">{eleve.nom} {eleve.prenom}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{eleve.matricule} • {eleve.classeId.nom}</div>
