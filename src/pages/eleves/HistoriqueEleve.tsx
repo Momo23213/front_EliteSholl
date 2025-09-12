@@ -214,7 +214,7 @@ const Historiques: React.FC = () => {
             ))}
           </div>
         ) : (
-          <p>Aucune note enregistrée</p>
+          <p>Aucune note enregistrée pour le moment</p>
         )}
       </div>
     </div>
