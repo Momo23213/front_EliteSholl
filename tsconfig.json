@@ -1,24 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
+    "target": "ESNext",                 // Version JS ciblée
+    "lib": ["DOM", "ESNext"],           // Inclut DOM et ESNext
+    "allowJs": true,                     // Autorise les fichiers .js et .jsx
+    "checkJs": false,                    // Ne vérifie pas le JS
+    "jsx": "react-jsx",                  // Support JSX pour React 18+
+    "strict": false,                     // Désactive toutes les vérifications strictes
+    "noImplicitAny": false,              // Autorise les any implicites
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "skipLibCheck": true,                // Ignore les erreurs dans les fichiers de dépendances
+    "forceConsistentCasingInFileNames": false,
+    "module": "ESNext",                  // Module ES pour bundlers modernes
     "moduleResolution": "Node",
     "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx" , // <<<<<< important pour JSX
-
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false,
-    "noUncheckedSideEffectImports": false
+    "outDir": "./dist"                   // Où compiler ton projet
   },
-  "include": ["src"]
+  "include": ["src/**/*"],               // Tous les fichiers dans src
+  "exclude": ["node_modules", "dist"]    // Exclut node_modules et dist
 }
