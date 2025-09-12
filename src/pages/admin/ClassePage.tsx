@@ -88,6 +88,8 @@ const ClassePage: React.FC = () => {
     setEditingClasse(classe);
     setEditClasseData({
       nom: classe.nom,
+      cycle: classe.cycle,
+      salle: classe.salle,
       niveau: classe.niveau,
       effMax: classe.effMax,
       anneeScolaireId: typeof classe.anneeScolaireId === 'string' ? undefined : classe.anneeScolaireId,
@@ -101,7 +103,7 @@ const ClassePage: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:3002/api/classe/${editingClasse._id}`, {
+      const response = await fetch(`https://schoolelite.onrender.com/api/classe/${editingClasse._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,10 +111,12 @@ const ClassePage: React.FC = () => {
           niveau: editClasseData.niveau,
           effMax: editClasseData.effMax,
           anneeScolaireId: typeof editClasseData.anneeScolaireId === 'string' ? editClasseData.anneeScolaireId : editClasseData.anneeScolaireId._id,
+          salle: editClasseData.salle,
+          cycle: editClasseData.cycle
         })
       });
       if (response.ok) {
-        const res = await fetch('http://localhost:3002/api/classe');
+        const res = await fetch('https://schoolelite.onrender.com/api/classe');
         const data = await res.json();
         setClasses(data);
         setEditingClasse(null);
@@ -143,7 +147,7 @@ const ClassePage: React.FC = () => {
 
   // Récupération des données du serveur
   useEffect(() => {
-    fetch('http://localhost:3002/api/classe')
+    fetch('https://schoolelite.onrender.com/api/classe')
       .then(res => res.json())
       .then((data: Classe[]) => {
         setClasses(data);
@@ -209,7 +213,7 @@ const ClassePage: React.FC = () => {
   const handleAddClasse = async () => {
     if (newClasse.nom && newClasse.niveau && newClasse.anneeScolaireId && newClasse.effMax && newClasse.salle && newClasse.cycle) {
       try {
-        const response = await fetch('http://localhost:3002/api/classe/creer', {
+        const response = await fetch('https://schoolelite.onrender.com/api/classe/creer', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -225,7 +229,7 @@ const ClassePage: React.FC = () => {
         });
         if (response.ok) {
           // Rafraîchir la liste
-          const res = await fetch('http://localhost:3002/api/classe');
+          const res = await fetch('https://schoolelite.onrender.com/api/classe');
           const data = await res.json();
           setClasses(data);
           setShowAddModal(false);
@@ -255,7 +259,7 @@ const ClassePage: React.FC = () => {
   const handleDeleteClasse = async (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette classe ?')) {
       try {
-        const response = await fetch(`http://localhost:3002/api/classe/${id}`, {
+        const response = await fetch(`https://schoolelite.onrender.com/api/classe/${id}`, {
           method: 'DELETE',
         });
         if (response.ok) {

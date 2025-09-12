@@ -46,7 +46,7 @@ const ControlePaiement: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3002/api/paiements/affiche")
+    fetch("https://schoolelite.onrender.com/api/paiements/affiche")
       .then((res) => res.json())
       .then((d) => {
         setData(d);
@@ -149,7 +149,7 @@ const ControlePaiement: React.FC = () => {
                     <td className="px-2 py-2 border dark:border-gray-700">
                       {el.eleveId.photo ? (
                         <img
-                          src={`http://localhost:3002${el.eleveId.photo}`}
+                          src={`https://schoolelite.onrender.com${el.eleveId.photo}`}
                           alt="photo"
                           className="w-10 h-10 rounded-full object-cover mx-auto border border-gray-300 dark:border-gray-600"
                         />
